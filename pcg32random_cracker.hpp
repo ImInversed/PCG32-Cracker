@@ -71,11 +71,11 @@ static uint64_t recover(uint32_t x0, uint32_t x1)
 
 		if (((rotx0 ^ upper >> 13) & ~31) == (uint32_t)(upper << 5))
         {
-			const uint32_t high_lower_bits = ((rotx0 ^ upper >> 13) & 31) << 27;
+			const uint32_t mid = ((rotx0 ^ upper >> 13) & 31) << 27;
 
 			for (uint32_t lower = 0; lower < (UINT64_C(1) << 27); lower++)
             {
-				const uint64_t candidate = (uint64_t)upper << 32 | high_lower_bits | lower;
+				const uint64_t candidate = (uint64_t)upper << 32 | mid | lower;
 
 				uint64_t state = candidate;
 
@@ -108,11 +108,11 @@ void _recover_worker(WorkerArgs args) {
 
         if (((rotx0 ^ upper >> 13) & ~31) == (uint32_t)(upper << 5))
         {
-            const uint32_t high_lower_bits = ((rotx0 ^ upper >> 13) & 31) << 27;
+            const uint32_t mid = ((rotx0 ^ upper >> 13) & 31) << 27;
 
             for (uint32_t lower = 0; lower < (UINT64_C(1) << 27) && !args.found->load(); lower++)
             {
-                const uint64_t candidate = (uint64_t)upper << 32 | high_lower_bits | lower;
+                const uint64_t candidate = (uint64_t)upper << 32 | mid | lower;
 
                 uint64_t state = candidate;
                 const uint32_t rand0 = pcg32_random(&state);
